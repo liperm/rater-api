@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/liperm/trabalho_mobile_02/database"
+)
 
 func main() {
-	fmt.Println("AEOW")
+	log.Println("Initializing...")
+	database.Connect()
 }
