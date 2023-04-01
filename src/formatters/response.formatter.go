@@ -1,4 +1,4 @@
-package formatter
+package formatters
 
 type createErrorResponse struct {
 	Message string `json:"message"`
