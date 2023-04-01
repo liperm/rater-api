@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 
-	"github.com/liperm/trabalho_mobile_02/database"
-	"github.com/liperm/trabalho_mobile_02/router"
+	"github.com/liperm/trabalho_mobile_02/src/database"
+	"github.com/liperm/trabalho_mobile_02/src/routes"
 )
 
 func main() {
 	log.Println("Initializing...")
 	database.Connect()
-	router.HandleRequest()
+	routes.HandleRequest()
 }

@@ -25,3 +25,9 @@ func CreateUser(u *models.User) error {
 
 	return nil
 }
+
+func GetUserById(id int) models.User {
+	var user models.User
+	database.DB.Where("active = ?", true).Find(&user, id)
+	return user
+}
