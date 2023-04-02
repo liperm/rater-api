@@ -62,7 +62,7 @@ func GetUsers() []models.User {
 func SendUpdatePasswordCode(email string) (string, error) {
 	user := repositories.GetUserByEmail(email)
 	if user.ID <= 0 {
-		log.Println("Get user by Email fail for Email ", email)
+		log.Println("Get user by Email fail for Email ", email, " not found")
 		return "", errors.New("user not found")
 	}
 
@@ -100,8 +100,10 @@ func sendMail(userEmail string, code string) error {
 	d := gomail.NewDialer("smtp.gmail.com", 587, email, emailPassword)
 
 	if err := d.DialAndSend(m); err != nil {
+		log.Println("[sendMail] Error: ", err)
 		return err
 	}
 
+	log.Println("[sendmail] Email sent to ", userEmail)
 	return nil
 }

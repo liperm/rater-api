@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -17,10 +18,12 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := formatters.CreateErrorResponse("User", err)
 		json.NewEncoder(w).Encode(errorResponse)
+		log.Println("[CreateUser] Response ", errorResponse)
 		return
 	}
 
 	response := formatters.CreateSuccessResponse(id)
+	log.Println("[CreateUser] Response ", response)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(response)
 }
@@ -32,6 +35,7 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := formatters.InvalidParamResponse("id")
 		json.NewEncoder(w).Encode(errorResponse)
+		log.Println("[GetUserById] Response ", errorResponse)
 		return
 	}
 
@@ -40,10 +44,12 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		errorResponse := formatters.NotFoundResponse("User")
 		json.NewEncoder(w).Encode(errorResponse)
+		log.Println("[GetUserById] Response ", errorResponse)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+	log.Println("[GetUserById] Response ", "OK")
 	json.NewEncoder(w).Encode(user)
 }
 
@@ -53,9 +59,11 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		errorResponse := formatters.NotFoundResponse("User")
 		json.NewEncoder(w).Encode(errorResponse)
+		log.Println("[GetUsers] Response ", errorResponse)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+	log.Println("[GetUsers] Response ", "OK")
 	json.NewEncoder(w).Encode(users)
 }
 
@@ -67,6 +75,7 @@ func GetUpdatePasswordCode(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := formatters.SendEmailErrorResponse(email, err)
 		json.NewEncoder(w).Encode(errorResponse)
+		log.Println("[GetUpdatePasswordCode] Response ", errorResponse)
 		return
 	}
 
