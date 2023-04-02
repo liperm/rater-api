@@ -38,3 +38,10 @@ func SendEmailErrorResponse(email string, err error) errorResponse {
 		Error:   err.Error(),
 	}
 }
+
+func CookieNotFoundResponse(err error) errorResponse {
+	return errorResponse{
+		Message: "could not find cookie",
+		Error:   err.Error(),
+	}
+}

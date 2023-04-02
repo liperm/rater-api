@@ -107,3 +107,22 @@ func sendMail(userEmail string, code string) error {
 	log.Println("[sendmail] Email sent to ", userEmail)
 	return nil
 }
+
+func ChangePassword(id int, newPassword string) error {
+	if newPassword == "" {
+		return errors.New("invalid password")
+	}
+	user := repositories.GetUserById(id)
+	if user.ID == 0 {
+		log.Println("User not found for ID ", id)
+		return errors.New("not found")
+	}
+
+	err := repositories.UpdatePassword(&user, newPassword)
+	if err != nil {
+		log.Println("Update Password error: ", err)
+		return err
+	}
+
+	return nil
+}

@@ -7,9 +7,14 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/liperm/trabalho_mobile_02/src/encryption"
 	"github.com/liperm/trabalho_mobile_02/src/formatters"
 	"github.com/liperm/trabalho_mobile_02/src/handlers"
 )
+
+type patchPasswordRequest struct {
+	NewPassword string `json:"password"`
+}
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	id, err := handlers.CreateUser(r.Body)
@@ -81,7 +86,7 @@ func GetUpdatePasswordCode(w http.ResponseWriter, r *http.Request) {
 
 	cookie := http.Cookie{
 		Name:     "change-password-code",
-		Value:    code,
+		Value:    encryption.EncryptData(code),
 		Path:     "/users",
 		MaxAge:   600,
 		HttpOnly: true,
@@ -89,5 +94,28 @@ func GetUpdatePasswordCode(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, &cookie)
+	w.WriteHeader(http.StatusOK)
+}
+
+func PatchPassword(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, paramErr := strconv.Atoi(vars["id"])
+	if paramErr != nil || id <= 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		errorResponse := formatters.InvalidParamResponse("id")
+		json.NewEncoder(w).Encode(errorResponse)
+		log.Println("[PatchPassword] Response ", errorResponse)
+		return
+	}
+
+	var request patchPasswordRequest
+	json.NewDecoder(r.Body).Decode(&request)
+	err := handlers.ChangePassword(id, request.NewPassword)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println("[PatchPassword] Response ", err)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }

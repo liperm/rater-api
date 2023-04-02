@@ -1,22 +1,13 @@
 package repositories
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-
 	"github.com/liperm/trabalho_mobile_02/src/database"
+	"github.com/liperm/trabalho_mobile_02/src/encryption"
 	"github.com/liperm/trabalho_mobile_02/src/models"
 )
 
-func encriptPassword(u *models.User) {
-	passord := u.Password
-	encryption := sha256.New()
-	encryption.Write([]byte(passord))
-	u.Password = hex.EncodeToString(encryption.Sum(nil))
-}
-
 func CreateUser(u *models.User) error {
-	encriptPassword(u)
+	u.Password = encryption.EncryptData(u.Password)
 	result := database.DB.Create(&u)
 
 	if result.Error != nil {
@@ -40,6 +31,21 @@ func GetUsers() []models.User {
 
 func GetUserByEmail(email string) models.User {
 	var user models.User
-	database.DB.Where("active = ? AND email = ?", true, email).Find(&user)
+	database.DB.
+		Where("active = ? AND email = ?", true, email).
+		Find(&user)
 	return user
+}
+
+func UpdatePassword(u *models.User, newPassword string) error {
+	encryptedPassword := encryption.EncryptData(newPassword)
+	result := database.DB.Model(&u).
+		Where("active = ?", true).
+		Update("password", encryptedPassword)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
