@@ -35,28 +35,28 @@ func CreateUser(requestBody io.ReadCloser) (int, error) {
 	return user.ID, nil
 }
 
-func GetUserById(id int) models.User {
+func GetUserById(id int) (models.User, error) {
 	user := repositories.GetUserById(id)
 
 	if user.ID == 0 {
 		log.Println("Get user by ID fail for ID ", id)
-		return user
+		return user, errors.New("not found")
 	}
 
 	log.Println("Get User By ID: ", user)
-	return user
+	return user, nil
 }
 
-func GetUsers() []models.User {
+func GetUsers() ([]models.User, error) {
 	users := repositories.GetUsers()
 
 	if len(users) == 0 {
 		log.Println("Get users fail")
-		return users
+		return users, errors.New("not found")
 	}
 
 	log.Println("Get Users ", users)
-	return users
+	return users, nil
 }
 
 func SendUpdatePasswordCode(email string) (string, error) {

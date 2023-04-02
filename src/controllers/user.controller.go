@@ -39,8 +39,8 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := handlers.GetUserById(id)
-	if user.ID == 0 {
+	user, err := handlers.GetUserById(id)
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		errorResponse := formatters.NotFoundResponse("User")
 		json.NewEncoder(w).Encode(errorResponse)
@@ -54,8 +54,8 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users := handlers.GetUsers()
-	if len(users) == 0 {
+	users, err := handlers.GetUsers()
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		errorResponse := formatters.NotFoundResponse("User")
 		json.NewEncoder(w).Encode(errorResponse)
