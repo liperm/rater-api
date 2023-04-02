@@ -1,5 +1,5 @@
 create schema rater;
-
+	
 create table rater.user(
     id serial primary key,
     name varchar not null,
@@ -8,6 +8,7 @@ create table rater.user(
     advertiser boolean default false,
     active boolean default true,
 	average_rating float default 0.0,
+	profile_picture varchar default 'https://drive.google.com/file/d/1QX9Zhj1eFTjDOSqQIRpBCm8IHjwPO8om/view?usp=share_link',
     created_at timestamp default current_timestamp not null,
     updated_at timestamp default current_timestamp not null
 );

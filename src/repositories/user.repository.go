@@ -31,3 +31,15 @@ func GetUserById(id int) models.User {
 	database.DB.Where("active = ?", true).Find(&user, id)
 	return user
 }
+
+func GetUsers() []models.User {
+	var users []models.User
+	database.DB.Where("active = ?", true).Find(&users)
+	return users
+}
+
+func GetUserByEmail(email string) models.User {
+	var user models.User
+	database.DB.Where("active = ? AND email = ?", true, email).Find(&user)
+	return user
+}

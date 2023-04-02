@@ -31,3 +31,10 @@ func NotFoundResponse(modelName string) errorResponse {
 		Message: modelName + " not found",
 	}
 }
+
+func SendEmailErrorResponse(email string, err error) errorResponse {
+	return errorResponse{
+		Message: "an error occurred while sending email to " + email,
+		Error:   err.Error(),
+	}
+}
