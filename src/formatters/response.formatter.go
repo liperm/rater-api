@@ -2,7 +2,7 @@ package formatters
 
 type errorResponse struct {
 	Message string `json:"message"`
-	Error   string `json:"error ,omitempty"`
+	Error   string `json:"error, omitempty"`
 }
 
 type createSuccessResponse struct {
@@ -42,6 +42,13 @@ func SendEmailErrorResponse(email string, err error) errorResponse {
 func CookieNotFoundResponse(err error) errorResponse {
 	return errorResponse{
 		Message: "could not find cookie",
+		Error:   err.Error(),
+	}
+}
+
+func InvalidPayloadResponse(err error) errorResponse {
+	return errorResponse{
+		Message: "invalid payload",
 		Error:   err.Error(),
 	}
 }

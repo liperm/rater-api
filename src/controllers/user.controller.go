@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/liperm/trabalho_mobile_02/src/encryption"
 	"github.com/liperm/trabalho_mobile_02/src/formatters"
 	"github.com/liperm/trabalho_mobile_02/src/handlers"
@@ -16,70 +15,72 @@ type patchPasswordRequest struct {
 	NewPassword string `json:"password"`
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
-	id, err := handlers.CreateUser(r.Body)
+type ForgotMyPasswordRequest struct {
+	Email string `json:"email"`
+}
+
+func CreateUser(c *gin.Context) {
+	id, err := handlers.CreateUser(c.Request.Body)
 
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := formatters.CreateErrorResponse("User", err)
-		json.NewEncoder(w).Encode(errorResponse)
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
 		log.Println("[CreateUser] Response ", errorResponse)
 		return
 	}
 
 	response := formatters.CreateSuccessResponse(id)
 	log.Println("[CreateUser] Response ", response)
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
+	c.IndentedJSON(http.StatusCreated, response)
 }
 
-func GetUserById(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+func GetUserById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil || id <= 0 {
-		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := formatters.InvalidParamResponse("id")
-		json.NewEncoder(w).Encode(errorResponse)
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
 		log.Println("[GetUserById] Response ", errorResponse)
 		return
 	}
 
 	user, err := handlers.GetUserById(id)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
 		errorResponse := formatters.NotFoundResponse("User")
-		json.NewEncoder(w).Encode(errorResponse)
+		c.IndentedJSON(http.StatusNotFound, errorResponse)
 		log.Println("[GetUserById] Response ", errorResponse)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 	log.Println("[GetUserById] Response ", "OK")
-	json.NewEncoder(w).Encode(user)
+	c.IndentedJSON(http.StatusOK, user)
 }
 
-func GetUsers(w http.ResponseWriter, r *http.Request) {
+func GetUsers(c *gin.Context) {
 	users, err := handlers.GetUsers()
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
 		errorResponse := formatters.NotFoundResponse("User")
-		json.NewEncoder(w).Encode(errorResponse)
+		c.IndentedJSON(http.StatusNotFound, errorResponse)
 		log.Println("[GetUsers] Response ", errorResponse)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	log.Println("[GetUsers] Response ", "OK")
-	json.NewEncoder(w).Encode(users)
+	c.IndentedJSON(http.StatusOK, users)
 }
 
-func GetUpdatePasswordCode(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	email := vars["email"]
+func ForgotMyPassword(c *gin.Context) {
+	var request ForgotMyPasswordRequest
+	err := c.ShouldBindJSON(&request)
+	if err != nil {
+		errorResponse := formatters.InvalidPayloadResponse(err)
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
+		log.Println("[GetUpdatePasswordCode] Response ", errorResponse)
+		return
+	}
+
+	email := request.Email
 	code, err := handlers.SendUpdatePasswordCode(email)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := formatters.SendEmailErrorResponse(email, err)
-		json.NewEncoder(w).Encode(errorResponse)
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
 		log.Println("[GetUpdatePasswordCode] Response ", errorResponse)
 		return
 	}
@@ -93,29 +94,27 @@ func GetUpdatePasswordCode(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
 	}
-	http.SetCookie(w, &cookie)
-	w.WriteHeader(http.StatusOK)
+	http.SetCookie(c.Writer, &cookie)
+	c.Writer.WriteHeader(http.StatusOK)
 }
 
-func PatchPassword(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, paramErr := strconv.Atoi(vars["id"])
+func PatchPassword(c *gin.Context) {
+	id, paramErr := strconv.Atoi(c.Param("id"))
 	if paramErr != nil || id <= 0 {
-		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := formatters.InvalidParamResponse("id")
-		json.NewEncoder(w).Encode(errorResponse)
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
 		log.Println("[PatchPassword] Response ", errorResponse)
 		return
 	}
 
 	var request patchPasswordRequest
-	json.NewDecoder(r.Body).Decode(&request)
+	c.BindJSON(&request)
 	err := handlers.ChangePassword(id, request.NewPassword)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		c.Writer.WriteHeader(http.StatusInternalServerError)
 		log.Println("[PatchPassword] Response ", err)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	c.Writer.WriteHeader(http.StatusOK)
 }
