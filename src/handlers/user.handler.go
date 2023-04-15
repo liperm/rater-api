@@ -21,6 +21,10 @@ var (
 	emailPassword string = os.Getenv("EMAIL_PASSWORD")
 )
 
+func init() {
+	log.SetPrefix("[Handler] ")
+}
+
 func CreateUser(requestBody io.ReadCloser) (int, error) {
 	var user models.User
 	json.NewDecoder(requestBody).Decode(&user)

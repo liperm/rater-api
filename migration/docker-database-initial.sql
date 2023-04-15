@@ -26,21 +26,22 @@ create table rater.item(
 	user_id integer not null,
 	name varchar not null,
 	category rater.item_category not null,
-	average_rating float default 0.0,
-	price float default 0.0,
+	brand_name varchar not null,
+	average_rating numeric(2, 1) default 0.0,
+	price numeric(11, 2) default 0.0,
 	active boolean default true,
 	created_at timestamp default current_timestamp not null,
 	updated_at timestamp default current_timestamp not null,
 	constraint fk_user_id
 		foreign key (user_id)
-			references rater.user(id),
+			references rater.user(id)
 );
 
 create table rater.review(
 	id serial primary key,
 	user_id integer not null,
 	item_id integer not null,
-	stars float default 0.0,
+	stars numeric(2, 1) default 0.0,
 	"text" text,
 	active boolean default true,
 	created_at timestamp default current_timestamp not null,

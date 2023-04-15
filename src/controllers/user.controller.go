@@ -19,6 +19,10 @@ type ForgotMyPasswordRequest struct {
 	Email string `json:"email"`
 }
 
+func init() {
+	log.SetPrefix("[Controller] ")
+}
+
 func CreateUser(c *gin.Context) {
 	id, err := handlers.CreateUser(c.Request.Body)
 

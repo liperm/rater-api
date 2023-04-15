@@ -17,5 +17,9 @@ func HandleRequest() {
 	router.PATCH("/auth/change-password/:token", controllers.PatchPassword)
 	router.POST("/auth/change-password", controllers.ForgotMyPassword)
 
+	// ITEMS
+	router.POST("/items", controllers.CreateItem)
+	router.GET("/items", controllers.GetItems)
+
 	log.Fatal(router.Run("localhost:8080"))
 }
