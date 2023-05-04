@@ -39,3 +39,35 @@ func GetItems() ([]models.Item, error) {
 	log.Println("Get Items ", items)
 	return items, nil
 }
+
+func GetItemById(id int) (models.Item, error) {
+	item := repositories.GetItemById(id)
+	if item.ID <= 0 {
+		log.Println("Get item by ID fail for ID ", id)
+		return item, errors.New("not found")
+	}
+
+	log.Println("Get Item By ID: ", item)
+	return item, nil
+}
+
+func GetItemsByCategory(category string) ([]models.Item, error) {
+	if !isCategoryValid(category) {
+		return nil, errors.New("invalid category")
+	}
+
+	items := repositories.GetItemsByCategory(category)
+	if len(items) == 0 {
+		log.Println("Get items fail")
+		return nil, errors.New("not found")
+
+	}
+
+	log.Println("Get Items By Category ", items)
+	return items, nil
+}
+
+func isCategoryValid(category string) bool {
+	_, isValid := models.ItemCategory[category]
+	return isValid
+}

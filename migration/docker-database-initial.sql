@@ -15,10 +15,10 @@ create type rater.item_category as enum(
 	'eletronic',
 	'book',
 	'furniture',
-	'video_games',
-	'board_games',
-	'clothes',
-	'vehicles'
+	'video_game',
+	'board_game',
+	'clothe',
+	'vehicle'
 );
 
 create table rater.item(

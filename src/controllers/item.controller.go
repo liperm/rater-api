@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/liperm/trabalho_mobile_02/src/formatters"
@@ -38,5 +39,46 @@ func GetItems(c *gin.Context) {
 	}
 
 	log.Println("[GetItems] Response ", "OK")
+	c.IndentedJSON(http.StatusOK, items)
+}
+
+func GetItemById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil || id <= 0 {
+		errorResponse := formatters.InvalidParamResponse("id")
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
+		log.Println("[GetItemById] Response ", errorResponse)
+		return
+	}
+
+	item, err := handlers.GetItemById(id)
+	if err != nil {
+		errorResponse := formatters.NotFoundResponse("Item")
+		c.IndentedJSON(http.StatusNotFound, errorResponse)
+		log.Println("[GetItemById] Response ", errorResponse)
+		return
+	}
+	log.Println("[GetItemById] Response ", "OK")
+	c.IndentedJSON(http.StatusOK, item)
+}
+
+func GetItemsByCategory(c *gin.Context) {
+	category := c.Param("category")
+	items, err := handlers.GetItemsByCategory(category)
+	if err != nil {
+		switch err.Error() {
+		case "not found":
+			errorResponse := formatters.NotFoundResponse("Item")
+			c.IndentedJSON(http.StatusNotFound, errorResponse)
+			log.Println("[GetItemsByCategory] Response ", errorResponse)
+			return
+		case "invalid category":
+			errorResponse := formatters.InvalidParamResponse(category)
+			c.IndentedJSON(http.StatusNotFound, errorResponse)
+			log.Println("[GetItemsByCategory] Response ", errorResponse)
+			return
+		}
+	}
+	log.Println("[GetItemsByCategory] Response ", "OK")
 	c.IndentedJSON(http.StatusOK, items)
 }

@@ -12,6 +12,16 @@ const (
 	Vehicle   itemCategory = "vehicle"
 )
 
+var ItemCategory = map[string]itemCategory{
+	"electronic": Eletronic,
+	"book":       Book,
+	"furniture":  Furniture,
+	"video_game": VideoGame,
+	"board_game": BoardGame,
+	"clothe":     Clothe,
+	"vehicle":    Vehicle,
+}
+
 type Item struct {
 	Base
 	Name          string       `json:"name"`
