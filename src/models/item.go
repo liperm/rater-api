@@ -31,6 +31,7 @@ type Item struct {
 	BrandName     string       `json:"brand_name"`
 	UserID        int          `json:"user_id"`
 	User          User         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;foreignKey:UserID;references:ID"`
+	Reviews       []Review     `json:"reviews"`
 }
 
 func (i *Item) TableName() string {
