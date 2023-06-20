@@ -23,6 +23,23 @@ func CreateReview(requestBody io.ReadCloser) (int, error) {
 		return 0, err
 	}
 
+	item := repositories.GetItemById(review.ItemID)
+	newAverage := getAverageRating(item.Reviews)
+	err = repositories.UpdateItemAverageRating(&item, newAverage)
+	if err != nil {
+		log.Println("Could not update average rating: ", err)
+		return 0, err
+	}
+
 	log.Println("New review Created: ", review)
 	return review.ID, nil
+}
+
+func getAverageRating(reviews []models.Review) float32 {
+	var ratingSum float32
+	for _, review := range reviews {
+		ratingSum += review.Stars
+	}
+
+	return ratingSum / float32(len(reviews))
 }

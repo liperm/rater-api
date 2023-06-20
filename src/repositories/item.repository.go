@@ -16,13 +16,17 @@ func CreateItem(item *models.Item) error {
 
 func GetItems() []models.Item {
 	var items []models.Item
-	database.DB.Preload("Reviews").Joins("User").Find(&items, "item.active = ?", true)
+	database.DB.Preload("Reviews").
+		Joins("User").
+		Find(&items, "item.active = ?", true)
 	return items
 }
 
 func GetItemById(id int) models.Item {
 	var item models.Item
-	database.DB.Joins("User").Find(&item, "item.active = ? and item.id = ?", true, id)
+	database.DB.Preload("Reviews").
+		Joins("User").
+		Find(&item, "item.active = ? and item.id = ?", true, id)
 	return item
 }
 
@@ -31,4 +35,16 @@ func GetItemsByCategory(category string) []models.Item {
 	whereClause := "item.active = ? and item.category = ?"
 	database.DB.Joins("User").Find(&items, whereClause, true, category)
 	return items
+}
+
+func UpdateItemAverageRating(i *models.Item, average float32) error {
+	result := database.DB.Model(&i).
+		Where("active = ?", true).
+		Update("average_rating", average)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
