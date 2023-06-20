@@ -10,6 +10,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/liperm/trabalho_mobile_02/src/encryption"
+	"github.com/liperm/trabalho_mobile_02/src/interfaces"
 	"github.com/liperm/trabalho_mobile_02/src/models"
 	"github.com/liperm/trabalho_mobile_02/src/repositories"
 	"gopkg.in/gomail.v2"
@@ -129,4 +131,22 @@ func ChangePassword(id int, newPassword string) error {
 	}
 
 	return nil
+}
+
+func Login(requestBody io.ReadCloser) int {
+	var request interfaces.Login
+	json.NewDecoder(requestBody).Decode(&request)
+	user := repositories.GetUserByEmail(request.Email)
+
+	if user.ID == 0 {
+		log.Println("User not found")
+		return 0
+	}
+
+	hashedPassword := encryption.EncryptData(request.Password)
+	if user.Password == hashedPassword {
+		return user.ID
+	}
+
+	return 0
 }

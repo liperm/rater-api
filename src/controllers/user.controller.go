@@ -122,3 +122,18 @@ func PatchPassword(c *gin.Context) {
 
 	c.Writer.WriteHeader(http.StatusOK)
 }
+
+func Login(c *gin.Context) {
+	id := handlers.Login(c.Request.Body)
+
+	if id == 0 {
+		errorResponse := formatters.NotFoundResponse("User")
+		c.IndentedJSON(http.StatusNotFound, errorResponse)
+		log.Println("[Login] Response ", errorResponse)
+		return
+	}
+
+	response := formatters.CreateSuccessResponse(id)
+	log.Println("[Login] Response ", response)
+	c.IndentedJSON(http.StatusCreated, response)
+}
