@@ -17,6 +17,7 @@ func CreateItem(item *models.Item) error {
 func GetItems() []models.Item {
 	var items []models.Item
 	database.DB.Preload("Reviews").
+		Preload("Reviews.User").
 		Joins("User").
 		Find(&items, "item.active = ?", true)
 	return items
@@ -25,6 +26,7 @@ func GetItems() []models.Item {
 func GetItemById(id int) models.Item {
 	var item models.Item
 	database.DB.Preload("Reviews").
+		Preload("Reviews.User").
 		Joins("User").
 		Find(&item, "item.active = ? and item.id = ?", true, id)
 	return item
