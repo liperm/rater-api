@@ -80,3 +80,16 @@ func DeleteFavorites(f *models.Favorites) error {
 
 	return nil
 }
+
+func GetFavoritesByUserId(userId int) ([]models.Favorites, error) {
+	var favorites []models.Favorites
+	result := database.DB.
+		Preload("Item").
+		Find(&favorites, "active = ? and user_id = ?", true, userId)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return favorites, nil
+}

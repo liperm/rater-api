@@ -2,9 +2,9 @@ package models
 
 type Favorites struct {
 	Base
-	User   User `json:"user"`
+	User   User `json:"user,omitempty"`
 	Item   Item `json:"item"`
-	UserID int  `json:"user_id"`
+	UserID int  `json:"user_id" gorm:""`
 	ItemID int  `json:"item_id"`
 }
 

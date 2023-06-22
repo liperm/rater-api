@@ -172,3 +172,23 @@ func DeleteFavorite(c *gin.Context) {
 	log.Println("[DeleteFavorite] Response ", "OK")
 	c.Writer.WriteHeader(http.StatusNoContent)
 }
+
+func GetFavoritesByUserId(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil || id <= 0 {
+		errorResponse := formatters.InvalidParamResponse("id")
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
+		log.Println("[GetFavoritesByUserId] Response ", errorResponse)
+		return
+	}
+
+	favorites, err := handlers.GetFavoritesByUserId(id)
+	if err != nil {
+		errorResponse := formatters.NotFoundResponse("User")
+		c.IndentedJSON(http.StatusNotFound, errorResponse)
+		log.Println("[GetFavoritesByUserId] Response ", errorResponse)
+		return
+	}
+	log.Println("[GetFavoritesByUserId] Response ", "OK")
+	c.IndentedJSON(http.StatusOK, favorites)
+}

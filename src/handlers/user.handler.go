@@ -181,3 +181,15 @@ func DeleteFavorite(id int) error {
 
 	return nil
 }
+
+func GetFavoritesByUserId(id int) ([]models.Favorites, error) {
+	favorites, err := repositories.GetFavoritesByUserId(id)
+
+	if err != nil {
+		log.Println("Get Favorites By User ID fail", id)
+		return favorites, errors.New("not found")
+	}
+
+	log.Println("Get Favorites By User ID: ", favorites)
+	return favorites, nil
+}
