@@ -1,8 +1,6 @@
 package repositories
 
 import (
-	"fmt"
-
 	"github.com/liperm/trabalho_mobile_02/src/database"
 	"github.com/liperm/trabalho_mobile_02/src/encryption"
 	"github.com/liperm/trabalho_mobile_02/src/models"
@@ -57,11 +55,28 @@ func UpdatePassword(u *models.User, newPassword string) error {
 }
 
 func CreateFavorites(f *models.Favorites) (int, error) {
-	fmt.Println(f)
 	result := database.DB.Create(&f)
 	if result.Error != nil {
 		return 0, result.Error
 	}
 
 	return f.ID, nil
+}
+
+func GetFavoriteByID(id int) models.Favorites {
+	var f models.Favorites
+	database.DB.First(&f, id)
+
+	return f
+}
+
+func DeleteFavorites(f *models.Favorites) error {
+	result := database.DB.Model(&f).
+		Update("active = ?", false)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
