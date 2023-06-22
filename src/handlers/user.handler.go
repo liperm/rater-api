@@ -150,3 +150,20 @@ func Login(requestBody io.ReadCloser) int {
 
 	return 0
 }
+
+func CreateFavorites(requestBody io.ReadCloser) (int, error) {
+	var favorite models.Favorites
+	err := json.NewDecoder(requestBody).Decode(&favorite)
+	if err != nil {
+		log.Println("Request Error")
+		return 0, errors.New("invalid_request")
+	}
+
+	id, err := repositories.CreateFavorites(&favorite)
+	if err != nil {
+		log.Println("Error creating favorites")
+		return 0, err
+	}
+
+	return id, nil
+}

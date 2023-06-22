@@ -17,6 +17,7 @@ func HandleRequest() {
 	router.PATCH("/auth/change-password/:token", controllers.PatchPassword)
 	router.POST("/auth/change-password", controllers.ForgotMyPassword)
 	router.POST("/auth/login", controllers.Login)
+	router.POST("/users/favorites", controllers.CreateFavorites)
 
 	// ITEMS
 	router.POST("/items", controllers.CreateItem)

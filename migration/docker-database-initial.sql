@@ -54,3 +54,17 @@ create table rater.review(
 			references rater.item(id)
 );
 
+create table rater.favorite(
+	id serial primary key,
+	user_id integer not null,
+	item_id integer not null,
+	active boolean default true,
+	created_at timestamp default current_timestamp not null,
+	updated_at timestamp default current_timestamp not null,	
+	constraint fk_user_id
+		foreign key (user_id)
+			references rater.user(id),
+	constraint fk_item_id
+		foreign key (item_id)
+			references rater.item(id)
+);

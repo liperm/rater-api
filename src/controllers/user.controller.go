@@ -137,3 +137,18 @@ func Login(c *gin.Context) {
 	log.Println("[Login] Response ", response)
 	c.IndentedJSON(http.StatusCreated, response)
 }
+
+func CreateFavorites(c *gin.Context) {
+	id, err := handlers.CreateFavorites(c.Request.Body)
+
+	if err != nil {
+		errorResponse := formatters.CreateErrorResponse("Favorite", err)
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
+		log.Println("[CreateFavorite] Response ", errorResponse)
+		return
+	}
+
+	response := formatters.CreateSuccessResponse(id)
+	log.Println("[CreateFavorite] Response ", response)
+	c.IndentedJSON(http.StatusCreated, response)
+}
