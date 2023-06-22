@@ -1,5 +1,7 @@
 package formatters
 
+import "github.com/liperm/trabalho_mobile_02/src/models"
+
 type errorResponse struct {
 	Message string `json:"message"`
 	Error   string `json:"error, omitempty"`
@@ -67,4 +69,13 @@ func GetCategoriesResponse(categoryNames []string) getCategoriesResponse {
 		formattedCategories = append(formattedCategories, category)
 	}
 	return getCategoriesResponse{Categories: formattedCategories}
+}
+
+func GetFavoriteItemsResponse(favorites []models.Favorites) []models.Item {
+	var itens []models.Item
+	for _, f := range favorites {
+		itens = append(itens, f.Item)
+	}
+
+	return itens
 }

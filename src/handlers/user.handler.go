@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/liperm/trabalho_mobile_02/src/encryption"
+	"github.com/liperm/trabalho_mobile_02/src/formatters"
 	"github.com/liperm/trabalho_mobile_02/src/interfaces"
 	"github.com/liperm/trabalho_mobile_02/src/models"
 	"github.com/liperm/trabalho_mobile_02/src/repositories"
@@ -182,14 +183,16 @@ func DeleteFavorite(id int) error {
 	return nil
 }
 
-func GetFavoritesByUserId(id int) ([]models.Favorites, error) {
+func GetFavoritesByUserId(id int) ([]models.Item, error) {
 	favorites, err := repositories.GetFavoritesByUserId(id)
-
+	var items []models.Item
 	if err != nil {
 		log.Println("Get Favorites By User ID fail", id)
-		return favorites, errors.New("not found")
+		return items, errors.New("not found")
 	}
 
+	items = formatters.GetFavoriteItemsResponse(favorites)
+
 	log.Println("Get Favorites By User ID: ", favorites)
-	return favorites, nil
+	return items, nil
 }
