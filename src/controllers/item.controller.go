@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/liperm/trabalho_mobile_02/src/formatters"
 	"github.com/liperm/trabalho_mobile_02/src/handlers"
+	"github.com/liperm/trabalho_mobile_02/src/models"
 )
 
 func init() {
@@ -81,4 +82,13 @@ func GetItemsByCategory(c *gin.Context) {
 	}
 	log.Println("[GetItemsByCategory] Response ", "OK")
 	c.IndentedJSON(http.StatusOK, items)
+}
+
+func GetCategories(c *gin.Context) {
+	var categories []string
+	for k := range models.ItemCategory {
+		categories = append(categories, k)
+	}
+
+	c.IndentedJSON(http.StatusOK, formatters.GetCategoriesResponse(categories))
 }

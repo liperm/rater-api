@@ -13,7 +13,7 @@ const (
 )
 
 var ItemCategory = map[string]itemCategory{
-	"electronic": Eletronic,
+	"eletronic":  Eletronic,
 	"book":       Book,
 	"furniture":  Furniture,
 	"video_game": VideoGame,

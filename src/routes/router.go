@@ -25,5 +25,8 @@ func HandleRequest() {
 	router.GET("/items/category/:category", controllers.GetItemsByCategory)
 	router.POST("/reviews", controllers.CreateReview)
 
+	// CATEGORY
+	router.GET("/categories", controllers.GetCategories)
+
 	log.Fatal(router.Run("localhost:8080"))
 }

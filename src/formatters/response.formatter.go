@@ -52,3 +52,19 @@ func InvalidPayloadResponse(err error) errorResponse {
 		Error:   err.Error(),
 	}
 }
+
+type category struct {
+	Name string `json:"name"`
+}
+type getCategoriesResponse struct {
+	Categories []category `json:"categories"`
+}
+
+func GetCategoriesResponse(categoryNames []string) getCategoriesResponse {
+	var formattedCategories []category
+	for _, c := range categoryNames {
+		category := category{Name: c}
+		formattedCategories = append(formattedCategories, category)
+	}
+	return getCategoriesResponse{Categories: formattedCategories}
+}
