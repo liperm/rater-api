@@ -169,14 +169,10 @@ func CreateFavorites(requestBody io.ReadCloser) (int, error) {
 	return id, nil
 }
 
-func DeleteFavorite(id int) error {
-	favorite := repositories.GetFavoriteByID(id)
-	if favorite.ID == 0 {
-		return errors.New("not_found")
-	}
-
-	err := repositories.DeleteFavorites(&favorite)
+func DeleteFavorite(userId int, itemId int) error {
+	err := repositories.DeleteFavorites(userId, itemId)
 	if err != nil {
+		log.Println("Error deleting favorites")
 		return err
 	}
 

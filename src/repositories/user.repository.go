@@ -70,9 +70,10 @@ func GetFavoriteByID(id int) models.Favorites {
 	return f
 }
 
-func DeleteFavorites(f *models.Favorites) error {
-	result := database.DB.Model(&f).
-		Update("active = ?", false)
+func DeleteFavorites(userId int, itemId int) error {
+	result := database.DB.Model(&models.Favorites{}).
+		Where("user_id = ? AND item_id = ?", userId, itemId).
+		Update("active", false)
 
 	if result.Error != nil {
 		return result.Error

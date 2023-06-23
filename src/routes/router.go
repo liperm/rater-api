@@ -18,7 +18,7 @@ func HandleRequest() {
 	router.POST("/auth/change-password", controllers.ForgotMyPassword)
 	router.POST("/auth/login", controllers.Login)
 	router.POST("/users/favorites", controllers.CreateFavorites)
-	router.DELETE("/users/favorites/:id", controllers.DeleteFavorite)
+	router.DELETE("/users/:userId/favorites/:itemId", controllers.DeleteFavorite)
 	router.GET("/users/:id/favorites", controllers.GetFavoritesByUserId)
 
 	// ITEMS
