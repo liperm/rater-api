@@ -92,3 +92,23 @@ func GetCategories(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, formatters.GetCategoriesResponse(categories))
 }
+
+func GetItemsByUserId(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil || id <= 0 {
+		errorResponse := formatters.InvalidParamResponse("id")
+		c.IndentedJSON(http.StatusBadRequest, errorResponse)
+		log.Println("[GetItemByUserId] Response ", errorResponse)
+		return
+	}
+
+	items, err := handlers.GetItemsByUserId(id)
+	if err != nil {
+		errorResponse := formatters.NotFoundResponse("Item")
+		c.IndentedJSON(http.StatusNotFound, errorResponse)
+		log.Println("[GetItemByUserId] Response ", errorResponse)
+		return
+	}
+	log.Println("[GetItemByUserId] Response ", "OK")
+	c.IndentedJSON(http.StatusOK, items)
+}

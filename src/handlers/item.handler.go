@@ -71,3 +71,14 @@ func isCategoryValid(category string) bool {
 	_, isValid := models.ItemCategory[category]
 	return isValid
 }
+
+func GetItemsByUserId(id int) ([]models.Item, error) {
+	items := repositories.GetItemsByUserId(id)
+	if len(items) <= 0 {
+		log.Println("Get item by user ID fail for ID ", id)
+		return items, errors.New("not found")
+	}
+
+	log.Println("Get Item By user ID: ", items)
+	return items, nil
+}

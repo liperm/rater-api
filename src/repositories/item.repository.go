@@ -50,3 +50,12 @@ func UpdateItemAverageRating(i *models.Item, average float32) error {
 
 	return nil
 }
+
+func GetItemsByUserId(userId int) []models.Item {
+	var item []models.Item
+	database.DB.Preload("Reviews").
+		Preload("Reviews.User").
+		Joins("User").
+		Find(&item, "item.active = ? and item.user_id = ?", true, userId)
+	return item
+}

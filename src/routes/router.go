@@ -20,6 +20,7 @@ func HandleRequest() {
 	router.POST("/users/favorites", controllers.CreateFavorites)
 	router.DELETE("/users/:userId/favorites/:itemId", controllers.DeleteFavorite)
 	router.GET("/users/:id/favorites", controllers.GetFavoritesByUserId)
+	router.GET("/users/:id/items", controllers.GetItemsByUserId)
 
 	// ITEMS
 	router.POST("/items", controllers.CreateItem)
